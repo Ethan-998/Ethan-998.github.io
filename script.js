@@ -80,7 +80,7 @@ document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
 
 /* ── Phone CAPTCHA ────────────────────────────────────── */
 // Number stored split so it's not a plain string in source
-const _p = ['365', '378', '3577'];
+const _p = '__PHONE__'.split('-');
 let _captchaAnswer = null;
 let _revealed = false;
 
