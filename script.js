@@ -78,6 +78,61 @@ const fadeObserver = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
 
+/* ── Phone CAPTCHA ────────────────────────────────────── */
+// Number stored split so it's not a plain string in source
+const _p = ['365', '378', '3577'];
+let _captchaAnswer = null;
+let _revealed = false;
+
+function openCaptcha() {
+  if (_revealed) return;
+  const a = Math.floor(Math.random() * 10) + 2;
+  const b = Math.floor(Math.random() * 10) + 2;
+  _captchaAnswer = a + b;
+  document.getElementById('captchaQuestion').textContent = `${a}  +  ${b}  = ?`;
+  document.getElementById('captchaInput').value = '';
+  document.getElementById('captchaError').textContent = '';
+  document.getElementById('captchaOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('captchaInput').focus(), 120);
+}
+
+function closeCaptcha(e) {
+  if (e.target === document.getElementById('captchaOverlay')) closeCaptchaBtn();
+}
+function closeCaptchaBtn() {
+  document.getElementById('captchaOverlay').classList.remove('open');
+}
+
+function checkCaptcha() {
+  const val = parseInt(document.getElementById('captchaInput').value, 10);
+  if (isNaN(val)) {
+    document.getElementById('captchaError').textContent = 'Please enter a number.';
+    return;
+  }
+  if (val !== _captchaAnswer) {
+    document.getElementById('captchaError').textContent = 'Incorrect — give it another try.';
+    document.getElementById('captchaInput').value = '';
+    document.getElementById('captchaInput').focus();
+    return;
+  }
+  // Correct — reveal number and convert card to a tel: link
+  _revealed = true;
+  closeCaptchaBtn();
+  const num = _p.join('-');
+  const card = document.getElementById('phoneCard');
+  card.onclick = null;
+  card.style.cursor = 'default';
+  card.outerHTML = `<a href="tel:+1${_p.join('')}" class="contact-card">
+    <div class="contact-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+    </div>
+    <div>
+      <p class="contact-label">Phone</p>
+      <p class="contact-value">${num}</p>
+    </div>
+  </a>`;
+}
+
 /* ── Contact form (mailto fallback) ──────────────────── */
 document.getElementById('contactForm').addEventListener('submit', function(e) {
   e.preventDefault();
