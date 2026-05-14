@@ -1,8 +1,8 @@
-# Zitong Wang — Personal Portfolio
+# Zitong — Personal Portfolio
 
 > Live site: **[ethan-998.github.io](https://ethan-998.github.io)**
 
-Personal portfolio website for Zitong Wang, a Data Analyst / Data Scientist / Analytics Engineer based in Hamilton, ON, Canada.
+Personal portfolio website for Zitong, a Data Analyst / Data Scientist / Analytics Engineer based in Hamilton, ON, Canada.
 
 ## About
 
