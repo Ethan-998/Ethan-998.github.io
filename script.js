@@ -133,27 +133,39 @@ function checkCaptcha() {
   </a>`;
 }
 
-/* ── Contact form (mailto fallback) ──────────────────── */
-document.getElementById('contactForm').addEventListener('submit', function(e) {
+/* ── Contact form (Web3Forms) ─────────────────────────── */
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const name    = document.getElementById('name').value.trim();
-  const email   = document.getElementById('email').value.trim();
-  const subject = document.getElementById('subject').value.trim() || 'Portfolio Contact';
-  const message = document.getElementById('message').value.trim();
-
-  const body = `Hi Zitong,\n\n${message}\n\n— ${name} (${email})`;
-  const mailto = `mailto:wang.zt@outlook.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-  const a = document.createElement('a');
-  a.href = mailto;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
+  const btn  = this.querySelector('button[type="submit"]');
   const note = document.getElementById('formNote');
-  note.textContent = 'Opening your email client...';
-  setTimeout(() => { note.textContent = ''; }, 3000);
+
+  btn.disabled    = true;
+  btn.textContent = 'Sending...';
+  note.style.color = '';
+  note.textContent = '';
+
+  try {
+    const data = new FormData(this);
+    const res  = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: data
+    });
+    const json = await res.json();
+
+    if (json.success) {
+      note.style.color = 'var(--green)';
+      note.textContent = 'Message sent! I\'ll get back to you soon.';
+      this.reset();
+    } else {
+      throw new Error(json.message || 'Submission failed');
+    }
+  } catch (err) {
+    note.style.color = '#f87171';
+    note.textContent = 'Something went wrong — please email me directly.';
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Send Message';
+  }
 });
 
 /* ── Smooth scroll for all anchor links ───────────────── */
