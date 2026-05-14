@@ -143,7 +143,13 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
 
   const body = `Hi Zitong,\n\n${message}\n\n— ${name} (${email})`;
   const mailto = `mailto:wang.zt@outlook.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.location.href = mailto;
+
+  const a = document.createElement('a');
+  a.href = mailto;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 
   const note = document.getElementById('formNote');
   note.textContent = 'Opening your email client...';
